@@ -1,0 +1,111 @@
+/* DogSearchComponent.css */
+
+/* General styling for the page */
+body {
+    font-family: 'Arial', sans-serif;
+    background-color: #f4f4f4;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .container {
+    width: 80%;
+    max-width: 1200px;
+    margin: 20px auto;
+  }
+  
+  h2 {
+    color: #333;
+  }
+  
+  /* Styling for the filter and sorting controls */
+  .filter-container {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 20px;
+  }
+  
+  label {
+    margin-right: 10px;
+  }
+  
+  select,
+  input {
+    padding: 8px;
+    font-size: 14px;
+  }
+  
+  /* Styling for the dog cards */
+  ul {
+    list-style: none;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+  }
+  
+  li {
+    margin: 10px;
+    flex: 0 0 calc(20% - 20px); /* Adjust the width as needed */
+  }
+  
+  .card {
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 16px;
+    width: 100%; /* Adjust the width as needed */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s;
+  }
+  
+  .card:hover {
+    transform: translateY(-5px);
+  }
+  
+  .card img {
+    width: 100%;
+    border-radius: 4px;
+    margin-bottom: 10px;
+  }
+  
+  /* Styling for buttons */
+  button {
+    background-color: #4caf50;
+    color: #fff;
+    border: none;
+    padding: 10px;
+    cursor: pointer;
+    border-radius: 4px;
+    transition: background-color 0.3s;
+  }
+  
+  button:hover {
+    background-color: #45a049;
+  }
+  
+  /* Pagination controls */
+  .pagination {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+  }
+  
+  .pagination button {
+    margin: 0 5px;
+  }
+  
+  /* Generate Match button */
+  .generate-match {
+    margin-top: 20px;
+  }
+  
+  /* Error message */
+  .error-message {
+    color: #d9534f;
+    margin-top: 10px;
+  }
+  

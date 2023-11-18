@@ -1,5 +1,5 @@
 import { createContext, useContext, ReactNode, useState } from 'react';
-import api from './api';
+import api from '../api';
 
 interface AuthContextProps {
   children: ReactNode;
