@@ -1,0 +1,10 @@
+{
+  "files": {
+    "main.js": "/fetch-dog-app/static/js/main.f8fc612b.js",
+    "index.html": "/fetch-dog-app/index.html",
+    "main.f8fc612b.js.map": "/fetch-dog-app/static/js/main.f8fc612b.js.map"
+  },
+  "entrypoints": [
+    "static/js/main.f8fc612b.js"
+  ]
+}
