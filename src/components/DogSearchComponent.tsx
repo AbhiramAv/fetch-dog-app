@@ -368,8 +368,6 @@ class DogSearchComponent extends Component<{}, SearchComponentState> {
       {/* Display Matched Dog Information */}
       {matchResult && (
           <div>
-            <h2>Match Result</h2>
-            <p>Match ID: {matchResult.match}</p>
             {dogs.map((dog) => {
               if (dog.id === matchResult.match) {
                 return (
