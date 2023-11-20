@@ -1,3 +1,5 @@
+// Login.tsx
+
 import React, { useState } from 'react';
 import { useAuth } from './AuthContext';
 
@@ -5,8 +7,26 @@ const Login: React.FC = () => {
   const { login } = useAuth();
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
+  const [error, setError] = useState('');
 
   const handleLogin = () => {
+    // Basic form validation
+    if (name.trim() === '' || email.trim() === '') {
+      setError('Name and email are required.');
+      return;
+    }
+
+    // Email format validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      setError('Invalid email format.');
+      return;
+    }
+
+    // Clear previous errors
+    setError('');
+
+    // Proceed with login
     login(name, email);
   };
 
@@ -26,6 +46,7 @@ const Login: React.FC = () => {
         onChange={(e) => setEmail(e.target.value)}
       />
       <button onClick={handleLogin}>Login</button>
+      {error && <p style={{ color: 'red' }}>{error}</p>}
     </div>
   );
 };
