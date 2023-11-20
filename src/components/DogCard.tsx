@@ -17,7 +17,7 @@ const CardContainer = styled.div`
 
 const CardImage = styled.img`
   width: 100%;
-  max-height: 200px;
+  height: 200px; /* Set a fixed height for the images */
   object-fit: cover;
 `;
 
