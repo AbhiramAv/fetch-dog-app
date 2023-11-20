@@ -2,6 +2,48 @@
 
 import React, { useState } from 'react';
 import { useAuth } from './AuthContext';
+import styled from 'styled-components';
+
+const LoginContainer = styled.div`
+  max-width: 400px;
+  margin: 0 auto;
+  padding: 20px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+`;
+
+const Title = styled.h2`
+  text-align: center;
+  color: #333;
+`;
+
+const Input = styled.input`
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 10px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+`;
+
+const Button = styled.button`
+  width: 100%;
+  padding: 10px;
+  background-color: #4caf50;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+
+  &:hover {
+    background-color: #45a049;
+  }
+`;
+
+const ErrorMessage = styled.p`
+  color: red;
+  text-align: center;
+`;
 
 const Login: React.FC = () => {
   const { login } = useAuth();
@@ -31,23 +73,23 @@ const Login: React.FC = () => {
   };
 
   return (
-    <div>
-      <h2>Login</h2>
-      <input
+    <LoginContainer>
+      <Title>Login</Title>
+      <Input
         type="text"
         placeholder="Name"
         value={name}
         onChange={(e) => setName(e.target.value)}
       />
-      <input
+      <Input
         type="email"
         placeholder="Email"
         value={email}
         onChange={(e) => setEmail(e.target.value)}
       />
-      <button onClick={handleLogin}>Login</button>
-      {error && <p style={{ color: 'red' }}>{error}</p>}
-    </div>
+      <Button onClick={handleLogin}>Login</Button>
+      {error && <ErrorMessage>{error}</ErrorMessage>}
+    </LoginContainer>
   );
 };
 

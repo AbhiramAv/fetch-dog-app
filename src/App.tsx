@@ -10,7 +10,7 @@ const App: React.FC = () => {
 
   return (
     <div>
-      <h1>PawsFinder</h1>
+      <h1 style={{ textAlign: 'center' }}>PawFinder</h1>
       {isAuthenticated ? <Logout /> : <Login />}
     </div>
   );

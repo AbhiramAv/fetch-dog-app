@@ -1,5 +1,3 @@
-// DogSearchComponent.tsx
-
 import React, { Component } from 'react';
 import api from '../api';
 import DogCard from './DogCard';
@@ -7,10 +5,29 @@ import Autocomplete from '@mui/material/Autocomplete';
 import TextField from '@mui/material/TextField';
 import styled from 'styled-components';
 
+
+
+interface CardRowProps {
+  cardsPerRow: number;
+}
+
 const Container = styled.div`
   max-width: 1200px;
   margin: 0 auto;
-  position: relative;
+  padding: 20px;
+`;
+
+const CardRow = styled.ul<CardRowProps>`
+  display: flex;
+  list-style: none;
+  justify-content: space-around;
+  flex-wrap: wrap;
+  margin-bottom: 20px;
+
+  li {
+    width: calc(${props => 100 / props.cardsPerRow}% - 20px);
+    margin-bottom: 20px;
+  }
 `;
 
 const FilterContainer = styled.div`
@@ -70,15 +87,6 @@ const Pagination = styled.div`
 `;
 
 
-// New styled component for card row
-const CardRow = styled.ul`
-  display: flex;
-  list-style: none;
-  justify-content: space-between;
-  flex-wrap: wrap;
-  margin-bottom: 20px;
-`;
-
 interface Dog {
   id: string;
   img: string;
@@ -104,7 +112,7 @@ interface SearchComponentState {
   breeds: string[];
   error?: string;
   currentPage: number;
-  itemsPerPage: number; // Corrected from `25` to `number`
+  itemsPerPage: number; 
   totalItems: number;
   sortDirection: 'asc' | 'desc';
   selectedBreeds: string[] | null;
@@ -142,6 +150,7 @@ class DogSearchComponent extends Component<{}, SearchComponentState> {
     this.fetchDogs();
     this.fetchBreeds();
   }
+  
 
   fetchBreeds = async () => {
     try {
@@ -166,8 +175,9 @@ class DogSearchComponent extends Component<{}, SearchComponentState> {
       });
 
       const dog_id_list: string[] = response.data.resultIds.slice(0, itemsPerPage);
-
+      console.log('Fetching dogs for page:', this.state.currentPage);
       const dogDetails: DogsResponse = await api.post('/dogs', dog_id_list);
+      
       this.setState({
         dogs: dogDetails.data as Dog[],
         totalItems: response.data.total,
@@ -179,7 +189,19 @@ class DogSearchComponent extends Component<{}, SearchComponentState> {
   };
 
   handlePageChange = (newPage: number) => {
+    const { totalPages } = this.calculateTotalPages();
+    newPage = Math.min(Math.max(newPage, 1), totalPages);
+  
+    console.log('New Page:', newPage);
+    console.log('Total Pages:', totalPages);
+  
     this.setState({ currentPage: newPage }, this.fetchDogs);
+  };
+
+  calculateTotalPages = () => {
+    const { totalItems, itemsPerPage } = this.state;
+    const totalPages = Math.ceil(totalItems / itemsPerPage);
+    return { totalPages };
   };
 
   handleSortChange = () => {
@@ -214,21 +236,25 @@ class DogSearchComponent extends Component<{}, SearchComponentState> {
     try {
       const { favoriteDogs } = this.state;
       const favoriteDogIds = favoriteDogs.map((favDog) => favDog.id);
-
+  
       // Log the favoriteDogIds being sent to /dogs/match
       console.log('Favorite Dog IDs:', favoriteDogIds);
-
+  
       const generateMatch = await api.post('/dogs/match', favoriteDogIds);
-
+  
       // Log the response from /dogs/match
       console.log('Match Generation Response:', generateMatch);
-
-      const matchResponse = await api.post('/dogs', generateMatch);
-
+  
+      // Assuming the match ID is in generateMatch.data.match
+      const matchId = generateMatch.data.match;
+  
+      // Fetch details of the matched dogs
+      const matchResponse = await api.post('/dogs', [matchId]);
+  
       // Log the response from /dogs
       console.log('Fetching Matched Dogs Response:', matchResponse);
-
-      this.setState({ matchResult: matchResponse.data });
+  
+      this.setState({ matchResult: { match: matchId } });
     } catch (error) {
       console.error('Failed to generate match', error);
     }
@@ -253,57 +279,71 @@ class DogSearchComponent extends Component<{}, SearchComponentState> {
     } = this.state;
 
     const totalPages = Math.ceil(totalItems / itemsPerPage);
-    const pageNumbers = Array.from({ length: Math.min(totalPages, 10) }, (_, i) => i + 1);
+  const maxDisplayedPages = 10; // Adjust this as needed
+  const middlePage = Math.floor(maxDisplayedPages / 2);
 
-    // Calculate the number of cards per row (change this as needed)
-    const cardsPerRow = 5;
-    const totalRows = Math.ceil(dogs.length / cardsPerRow);
+  let startPage = Math.max(currentPage - middlePage, 1);
+  let endPage = Math.min(startPage + maxDisplayedPages - 1, totalPages);
 
-    // Generate an array of row indices
-    const rowIndices = Array.from({ length: totalRows }, (_, i) => i);
+  if (endPage - startPage + 1 < maxDisplayedPages) {
+    startPage = Math.max(endPage - maxDisplayedPages + 1, 1);
+  }
 
-    return (
-      <Container>
-        <h2>Dog Search</h2>
-        {error && <p className="error-message">Error: {error}</p>}
-        <FilterContainer>
-  <div>
-    <label>
-      Filter by Breed
-      <Autocomplete
-        disablePortal
-        id="combo-box-demo"
-        options={breeds}
-        sx={{ width: 300 }}
-        onChange={this.handleBreedFilterChange}
-        renderInput={(params) => <TextField {...params}  />}
-      />
-            </label>
-            <label>
-  Sort Direction
-  <Autocomplete
-    disablePortal
-    id="sort-direction-autocomplete"
-    options={['Ascending', 'Descending']}
-    value={sortDirection === 'asc' ? 'Ascending' : 'Descending'}
-    onChange={(event, value) => {
-      const newSortDirection = value === 'Ascending' ? 'asc' : 'desc';
-      this.setState({ sortDirection: newSortDirection }, this.fetchDogs);
-    }}
-    style={{ width: "190px", fontSize: "14px" }}
-    renderInput={(params) => <TextField {...params} />}
-  />
-</label>
-  </div>
-  <div>
-    <StyledButton className="generate-match" onClick={this.generateMatch}>
-      Generate Match
-    </StyledButton>
-  </div>
-</FilterContainer>
+  const pageNumbers = Array.from({ length: endPage - startPage + 1 }, (_, i) => startPage + i);
 
-        {rowIndices.map((rowIndex) => (
-          <CardRow key={rowIndex} className="card-row">
+  // Calculate the number of cards per row (change this as needed)
+  const cardsPerRow = 5;
+  const totalRows = Math.ceil(dogs.length / cardsPerRow);
+
+  // Generate an array of row indices
+  const rowIndices = Array.from({ length: totalRows }, (_, i) => i);
+
+  return (
+    <Container>
+      <h2>Dog Search</h2>
+      {error && <p className="error-message">Error: {error}</p>}
+      <FilterContainer>
+        <div>
+          <label>
+            Filter by Breed
+            <Autocomplete
+              disablePortal
+              id="combo-box-demo"
+              options={breeds}
+              sx={{ width: 300 }}
+              onChange={this.handleBreedFilterChange}
+              renderInput={(params) => <TextField {...params} />}
+            />
+          </label>
+          <label>
+            Sort Direction
+            <Autocomplete
+              disablePortal
+              id="sort-direction-autocomplete"
+              options={['Ascending', 'Descending']}
+              value={sortDirection === 'asc' ? 'Ascending' : 'Descending'}
+              onChange={(event, value) => {
+                const newSortDirection = value === 'Ascending' ? 'asc' : 'desc';
+                this.setState({ sortDirection: newSortDirection }, this.fetchDogs);
+              }}
+              style={{ width: '190px', fontSize: '14px' }}
+              renderInput={(params) => <TextField {...params} />}
+            />
+          </label>
+        </div>
+        <div>
+            {favoriteDogs.length > 0 ? (
+              <StyledButton className="generate-match" onClick={this.generateMatch}>
+                Generate Match
+              </StyledButton>
+            ) : (
+              <p>Add dogs to favorites to generate a match!</p>
+            )}
+          </div>
+      </FilterContainer>
+
+      {rowIndices.map((rowIndex) => (
+          <CardRow key={rowIndex} className="card-row" cardsPerRow={cardsPerRow}>
             {dogs.slice(rowIndex * cardsPerRow, (rowIndex + 1) * cardsPerRow).map((dog) => (
               <li key={dog.id} className="card">
                 <DogCard
@@ -311,59 +351,52 @@ class DogSearchComponent extends Component<{}, SearchComponentState> {
                   onAddToFavorites={() => this.toggleFavorite(dog)}
                   isFavorite={favoriteDogs.some((favDog) => favDog.id === dog.id)}
                 />
-                <button
-                  onClick={() => this.toggleFavorite(dog)}
-                  className={favoriteDogs.some((favDog) => favDog.id === dog.id) ? 'remove-favorite' : 'add-favorite'}
-                >
-                  {favoriteDogs.some((favDog) => favDog.id === dog.id) ? 'Remove from Favorites' : 'Add to Favorites'}
-                </button>
               </li>
             ))}
           </CardRow>
+      ))}
+      <Pagination>
+        <button onClick={() => this.handlePageChange(currentPage - 1)} disabled={currentPage === 1}>
+          Previous
+        </button>
+        {pageNumbers.map((number) => (
+          <button
+            key={number}
+            onClick={() => this.handlePageChange(number)}
+            className={currentPage === number ? 'active' : ''}
+          >
+            {number}
+          </button>
         ))}
-        <Pagination>
-          <button onClick={() => this.handlePageChange(currentPage - 1)} disabled={currentPage === 1}>
-            Previous
-          </button>
-          {pageNumbers.map((number) => (
-            <button
-              key={number}
-              onClick={() => this.handlePageChange(number)}
-              className={currentPage === number ? 'active' : ''}
-            >
-              {number}
-            </button>
-          ))}
-          <button onClick={() => this.handlePageChange(currentPage + 1)} disabled={currentPage === totalPages}>
-            Next
-          </button>
-        </Pagination>
-        {/* Display Matched Dog Information */}
-        {matchResult && (
-          <div>
-            <h2>Match Result</h2>
-            <p>Match ID: {matchResult.match}</p>
-            {dogs.map((dog) => {
-              if (dog.id === matchResult.match) {
-                return (
-                  <div key={dog.id}>
-                    <h3>Matched Dog Information</h3>
-                    <DogCard
-                      dog={dog}
-                      onAddToFavorites={() => this.toggleFavorite(dog)}
-                      isFavorite={favoriteDogs.some((favDog) => favDog.id === dog.id)}
-                    />
-                    {/* Add any additional details you want to display */}
-                  </div>
-                );
-              }
-              return null;
-            })}
-          </div>
-        )}
-      </Container>
-    );
-  }
+        <button onClick={() => this.handlePageChange(currentPage + 1)} disabled={currentPage === totalPages}>
+          Next
+        </button>
+      </Pagination>
+      {/* Display Matched Dog Information */}
+      {matchResult && (
+        <div>
+          <h2>Match Result</h2>
+          <p>Match ID: {matchResult.match}</p>
+          {dogs.map((dog) => {
+            if (dog.id === matchResult.match) {
+              return (
+                <div key={dog.id}>
+                  <h3>Matched Dog Information</h3>
+                  <DogCard
+                    dog={dog}
+                    onAddToFavorites={() => this.toggleFavorite(dog)}
+                    isFavorite={favoriteDogs.some((favDog) => favDog.id === dog.id)}
+                  />
+                </div>
+              );
+            }
+            return null;
+          })}
+        </div>
+      )}
+    </Container>
+  );
+}
 }
 
 export default DogSearchComponent;
