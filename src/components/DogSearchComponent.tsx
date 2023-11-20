@@ -2,7 +2,7 @@
 
 import React, { Component } from 'react';
 import api from '../api';
-import DogCard from './DogDetails';
+import DogCard from './DogCard';
 import Autocomplete from '@mui/material/Autocomplete';
 import TextField from '@mui/material/TextField';
 
