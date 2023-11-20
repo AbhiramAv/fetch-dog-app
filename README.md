@@ -24,11 +24,6 @@ PawFinder is a web application that allows users to search for dogs, add them to
     npm install
     ```
 
-3. **Set up environment variables:**
-
-   - Duplicate the `.env.example` file and rename it to `.env`.
-   - Populate the required environment variables.
-
 4. **Run the development server:**
 
     ```bash
@@ -41,7 +36,7 @@ PawFinder is a web application that allows users to search for dogs, add them to
 
 ## Usage
 
-- If you are a new user, click on the "Login" button to enter your name and email.
+- If you are a new user, enter your 'Name' and 'Email' then click on the "Login" button to enter the website.
 - Explore the dog search functionality to find your favorite dogs.
 - Add dogs to your favorites and generate matches.
 
