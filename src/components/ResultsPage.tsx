@@ -5,7 +5,6 @@ import api from '../api';
 import DogCard from './DogDetails';
 import Autocomplete from '@mui/material/Autocomplete';
 import TextField from '@mui/material/TextField';
-import '../css/styling.css'; // Import the CSS file
 
 interface Dog {
   id: string;
