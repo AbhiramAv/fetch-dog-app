@@ -27,7 +27,7 @@ const Login: React.FC = () => {
     setError('');
 
     // Proceed with login
-    login(name, email);
+    login({ name, email });
   };
 
   return (

@@ -1,49 +1,35 @@
-// AuthContext.tsx
+import React, { createContext, useContext, useState, ReactNode } from 'react';
 
-import { createContext, useContext, ReactNode, useState } from 'react';
-import api from '../api';
-
-interface AuthContextProps {
-  children: ReactNode;
+interface User {
+  name: string;
+  email: string;
 }
 
-interface AuthState {
+interface AuthContextProps {
   isAuthenticated: boolean;
-  login: (name: string, email: string) => Promise<void>;
+  user: User | null;
+  login: (userData: User) => void;
   logout: () => void;
 }
 
-const AuthContext = createContext<AuthState | undefined>(undefined);
+const AuthContext = createContext<AuthContextProps | undefined>(undefined);
 
-export const AuthProvider: React.FC<AuthContextProps> = ({ children }) => {
+export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [user, setUser] = useState<User | null>(null);
 
-  const login = async (name: string, email: string) => {
-    try {
-      const response = await api.post('/auth/login', { name, email });
-      const authToken = response.headers['fetch-access-token'];
-      api.defaults.headers.common['Authorization'] = `Bearer ${authToken}`;
-      setIsAuthenticated(true);
-      console.log('Login response:', response);
-    } catch (error) {
-      console.error('Login failed:', error);
-    }
+  const login = (userData: User) => {
+    setIsAuthenticated(true);
+    setUser(userData);
   };
 
   const logout = () => {
-    // Add logic to invalidate the auth cookie
-    api.post('/auth/logout')
-      .then(() => {
-        setIsAuthenticated(false);
-        console.log('Logout successful');
-      })
-      .catch((error) => {
-        console.error('Logout failed:', error);
-      });
+    setIsAuthenticated(false);
+    setUser(null);
   };
 
   return (
-    <AuthContext.Provider value={{ isAuthenticated, login, logout }}>
+    <AuthContext.Provider value={{ isAuthenticated, user, login, logout }}>
       {children}
     </AuthContext.Provider>
   );
