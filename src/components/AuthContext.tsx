@@ -1,3 +1,5 @@
+// AuthContext.tsx
+
 import { createContext, useContext, ReactNode, useState } from 'react';
 import api from '../api';
 
@@ -8,6 +10,7 @@ interface AuthContextProps {
 interface AuthState {
   isAuthenticated: boolean;
   login: (name: string, email: string) => Promise<void>;
+  logout: () => void;
 }
 
 const AuthContext = createContext<AuthState | undefined>(undefined);
@@ -20,15 +23,27 @@ export const AuthProvider: React.FC<AuthContextProps> = ({ children }) => {
       const response = await api.post('/auth/login', { name, email });
       const authToken = response.headers['fetch-access-token'];
       api.defaults.headers.common['Authorization'] = `Bearer ${authToken}`;
-        setIsAuthenticated(true);
-        console.log('Login response:', response);
+      setIsAuthenticated(true);
+      console.log('Login response:', response);
     } catch (error) {
       console.error('Login failed:', error);
     }
   };
 
+  const logout = () => {
+    // Add logic to invalidate the auth cookie
+    api.post('/auth/logout')
+      .then(() => {
+        setIsAuthenticated(false);
+        console.log('Logout successful');
+      })
+      .catch((error) => {
+        console.error('Logout failed:', error);
+      });
+  };
+
   return (
-    <AuthContext.Provider value={{ isAuthenticated, login }}>
+    <AuthContext.Provider value={{ isAuthenticated, login, logout }}>
       {children}
     </AuthContext.Provider>
   );
