@@ -1,9 +1,7 @@
-// ResultsPage.tsx
-
 import React, { useState, useEffect } from 'react';
 import { useAuth } from './AuthContext';
 import DogSearchComponent from './DogSearchComponent';
-import LoginPage from '../components/Login'; // Import your login component
+import LoginPage from '../components/Login'; 
 
 const Logout: React.FC = () => {
     const { isAuthenticated, logout, user } = useAuth();
@@ -34,7 +32,7 @@ const Logout: React.FC = () => {
             <div
               style={{
                 position: 'absolute',
-                top: '10px', // Adjusted top position
+                top: '10px',
                 right: '10px',
                 zIndex: 1,
               }}
@@ -48,8 +46,8 @@ const Logout: React.FC = () => {
                   border: 'none',
                   borderRadius: '5px',
                   cursor: 'pointer',
-                  height: '40px', // Adjusted height
-                  width: '120px', // Adjusted width
+                  height: '40px', 
+                  width: '120px',
                 }}
               >
                 {'Profile'}
@@ -59,7 +57,7 @@ const Logout: React.FC = () => {
                 <div
                   style={{
                     position: 'absolute',
-                    top: '50px', // Adjusted top position
+                    top: '50px', 
                     right: '0',
                     background: 'white',
                     boxShadow: '0px 8px 16px 0px rgba(0,0,0,0.2)',
@@ -68,10 +66,6 @@ const Logout: React.FC = () => {
                     zIndex: 2,
                   }}
                 >
-                  {/* User Information */}
-                  <p>Name: {user?.name}</p>
-                  <p>Email: {user?.email}</p>
-                  {/* ... other user information */}
                   {/* Logout Button */}
                   <button
                     onClick={handleLogout}

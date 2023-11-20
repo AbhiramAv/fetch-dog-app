@@ -260,11 +260,6 @@ class DogSearchComponent extends Component<{}, SearchComponentState> {
     }
   };
 
-  handleLogout = () => {
-    // Implement your logout logic here
-    console.log('Logout button clicked');
-  };
-
   render() {
     const {
       dogs,
@@ -279,7 +274,7 @@ class DogSearchComponent extends Component<{}, SearchComponentState> {
     } = this.state;
 
     const totalPages = Math.ceil(totalItems / itemsPerPage);
-  const maxDisplayedPages = 10; // Adjust this as needed
+  const maxDisplayedPages = 10; 
   const middlePage = Math.floor(maxDisplayedPages / 2);
 
   let startPage = Math.max(currentPage - middlePage, 1);
@@ -290,8 +285,6 @@ class DogSearchComponent extends Component<{}, SearchComponentState> {
   }
 
   const pageNumbers = Array.from({ length: endPage - startPage + 1 }, (_, i) => startPage + i);
-
-  // Calculate the number of cards per row (change this as needed)
   const cardsPerRow = 5;
   const totalRows = Math.ceil(dogs.length / cardsPerRow);
 
@@ -374,26 +367,27 @@ class DogSearchComponent extends Component<{}, SearchComponentState> {
       </Pagination>
       {/* Display Matched Dog Information */}
       {matchResult && (
-        <div>
-          <h2>Match Result</h2>
-          <p>Match ID: {matchResult.match}</p>
-          {dogs.map((dog) => {
-            if (dog.id === matchResult.match) {
-              return (
-                <div key={dog.id}>
-                  <h3>Matched Dog Information</h3>
-                  <DogCard
-                    dog={dog}
-                    onAddToFavorites={() => this.toggleFavorite(dog)}
-                    isFavorite={favoriteDogs.some((favDog) => favDog.id === dog.id)}
-                  />
-                </div>
-              );
-            }
-            return null;
-          })}
-        </div>
-      )}
+          <div>
+            <h2>Match Result</h2>
+            <p>Match ID: {matchResult.match}</p>
+            {dogs.map((dog) => {
+              if (dog.id === matchResult.match) {
+                return (
+                  <div key={dog.id}>
+                    <h3>Matched Dog Information</h3>
+                    {/* Render DogCard component if needed */}
+                    <DogCard
+                      dog={dog}
+                      onAddToFavorites={() => this.toggleFavorite(dog)}
+                      isFavorite={favoriteDogs.some((favDog) => favDog.id === dog.id)}
+                    />
+                  </div>
+                );
+              }
+              return null;
+            })}
+          </div>
+        )}
     </Container>
   );
 }

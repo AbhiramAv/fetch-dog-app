@@ -58,6 +58,12 @@ const Login: React.FC = () => {
       return;
     }
 
+    const nameRegex = /^[A-Za-z]+$/;
+    if (!nameRegex.test(name)) {
+      setError('Name should contain only alphabets.');
+      return;
+    }
+
     // Email format validation
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
@@ -68,8 +74,8 @@ const Login: React.FC = () => {
     // Clear previous errors
     setError('');
 
-    // Proceed with login
-    login({ name, email });
+    // Pass individual properties
+    login(name, email);
   };
 
   return (
