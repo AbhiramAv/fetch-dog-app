@@ -42,23 +42,25 @@ PawFinder is a web application that allows users to search for dogs, add them to
 
 ## Folder Structure
 
-pawfinder/
-|-- src/
-| |-- components/
-| | |-- AuthContext.tsx
-| | |-- DogCard.tsx
-| | |-- DogSearchComponent.tsx
-| | |-- Login.tsx
-| | |-- Logout.tsx
-| |-- api/
-| |-- styles/
-| |-- App.tsx
-| |-- index.tsx
-|-- public/
-|-- .env.example
-|-- README.md
-|-- package.json
-|-- ...
+- **`src/`**: Contains the source code of the project.
+  - **`components/`**: React components used in the project.
+    - `AuthContext.tsx`: Authentication context for user login/logout.
+    - `DogCard.tsx`: Component for displaying dog information in a card.
+    - `DogSearchComponent.tsx`: Main component for dog search functionality.
+    - `Login.tsx`: Component for user login.
+    - `Logout.tsx`: Component for user logout.
+  - **`api/`**: Directory for API-related code.
+  - **`styles/`**: Directory for stylesheets.
+  - `App.tsx`: Main React application component.
+  - `index.tsx`: Entry point for the application.
+
+- **`public/`**: Public assets and files.
+
+- **`.env.example`**: Example file for environment variables.
+
+- **`README.md`**: Documentation for the project.
+
+- **`package.json`**: Configuration file for npm packages and scripts.
 
 
 ## Dependencies
