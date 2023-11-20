@@ -19,6 +19,7 @@ const Title = styled.h2`
 `;
 
 const Input = styled.input`
+  box-sizing: border-box; 
   width: 100%;
   padding: 10px;
   margin-bottom: 10px;

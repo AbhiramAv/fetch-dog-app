@@ -4,6 +4,8 @@ import DogCard from './DogCard';
 import Autocomplete from '@mui/material/Autocomplete';
 import TextField from '@mui/material/TextField';
 import styled from 'styled-components';
+import { animateScroll } from 'react-scroll';
+
 
 
 
@@ -237,28 +239,36 @@ class DogSearchComponent extends Component<{}, SearchComponentState> {
       const { favoriteDogs } = this.state;
       const favoriteDogIds = favoriteDogs.map((favDog) => favDog.id);
   
-      // Log the favoriteDogIds being sent to /dogs/match
       console.log('Favorite Dog IDs:', favoriteDogIds);
   
       const generateMatch = await api.post('/dogs/match', favoriteDogIds);
   
-      // Log the response from /dogs/match
       console.log('Match Generation Response:', generateMatch);
   
-      // Assuming the match ID is in generateMatch.data.match
       const matchId = generateMatch.data.match;
   
-      // Fetch details of the matched dogs
+      console.log('Match ID:', matchId);
+  
       const matchResponse = await api.post('/dogs', [matchId]);
   
-      // Log the response from /dogs
       console.log('Fetching Matched Dogs Response:', matchResponse);
   
-      this.setState({ matchResult: { match: matchId } });
+      this.setState({ matchResult: { match: matchId } }, () => {
+        const matchResultSection = document.getElementById('match-result-section');
+        console.log('Match Result Section:', matchResultSection);
+  
+        if (matchResultSection) {
+          animateScroll.scrollTo(matchResultSection.offsetTop, {
+            duration: 800,
+            smooth: 'easeInOutQuad',
+          });
+        }
+      });
     } catch (error) {
       console.error('Failed to generate match', error);
     }
   };
+  
 
   render() {
     const {
@@ -366,26 +376,25 @@ class DogSearchComponent extends Component<{}, SearchComponentState> {
         </button>
       </Pagination>
       {/* Display Matched Dog Information */}
-      {matchResult && (
-          <div>
-            <h2>Match Result</h2>
-            <p>Match ID: {matchResult.match}</p>
-            {dogs.map((dog) => {
-              if (dog.id === matchResult.match) {
-                return (
-                  <div key={dog.id}>
-                    <h3>Matched Dog Information</h3>
-                    {/* Render DogCard component if needed */}
-                    <DogCard
-                      dog={dog}
-                      onAddToFavorites={() => this.toggleFavorite(dog)}
-                      isFavorite={favoriteDogs.some((favDog) => favDog.id === dog.id)}
-                    />
-                  </div>
-                );
-              }
-              return null;
-            })}
+      {matchResult && matchResult.match && (
+  <div id="match-result-section">
+    {dogs.map((dog) => {
+      if (dog.id === matchResult.match) {
+        return (
+          <div key={dog.id}>
+            <h3>Matched Dog Information</h3>
+            {/* Render DogCard component if needed */}
+            <DogCard
+              dog={dog}
+              onAddToFavorites={() => this.toggleFavorite(dog)}
+              isFavorite={favoriteDogs.some((favDog) => favDog.id === dog.id)}
+            />
+          </div>
+        );
+      }
+      return null;
+    })}
+
           </div>
         )}
     </Container>

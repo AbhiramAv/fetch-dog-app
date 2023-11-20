@@ -1,4 +1,5 @@
 {
+  "homepage": "http://abhiramav.github.io/fetch-dog-app",
   "name": "fetch-dog-app",
   "version": "0.1.0",
   "private": true,
@@ -18,11 +19,14 @@
     "react-dom": "^18.2.0",
     "react-router-dom": "^6.19.0",
     "react-scripts": "5.0.1",
+    "react-scroll": "^1.9.0",
     "styled-components": "^6.1.1",
     "web-vitals": "^2.1.4"
   },
   "scripts": {
     "start": "react-scripts start",
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d build",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
@@ -46,6 +50,8 @@
     ]
   },
   "devDependencies": {
+    "@types/react-scroll": "^1.8.10",
+    "gh-pages": "^6.1.0",
     "typescript": "^5.2.2"
   }
 }
