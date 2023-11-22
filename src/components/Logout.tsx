@@ -1,93 +1,111 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from './AuthContext';
 import DogSearchComponent from './DogSearchComponent';
-import LoginPage from '../components/Login'; 
+import LoginPage from '../components/Login';
 
+// Logout component definition
 const Logout: React.FC = () => {
-    const { isAuthenticated, logout, user } = useAuth();
-    const [redirectToLogin, setRedirectToLogin] = useState(false);
-    const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  
-    useEffect(() => {
-      if (!isAuthenticated) {
-        setRedirectToLogin(true);
-      }
-    }, [isAuthenticated]);
-  
-    const handleLogout = () => {
-      logout();
+  // Use authentication context for user authentication and logout
+  const { isAuthenticated, logout } = useAuth();
+
+  // State to manage redirection to login page
+  const [redirectToLogin, setRedirectToLogin] = useState(false);
+
+  // State to manage the visibility of the dropdown
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+
+  // Effect to redirect to login page when not authenticated
+  useEffect(() => {
+    if (!isAuthenticated) {
       setRedirectToLogin(true);
-    };
-  
-    const toggleDropdown = () => {
-      setIsDropdownOpen(!isDropdownOpen);
-    };
-  
-    return (
-      <div style={{ position: 'relative' }}>
-        {redirectToLogin ? (
-          <LoginPage />
-        ) : (
-          <>
-            <div
+    }
+  }, [isAuthenticated]);
+
+  // Handle logout action
+  const handleLogout = () => {
+    logout();
+    setRedirectToLogin(true);
+  };
+
+  // Toggle the visibility of the profile dropdown
+  const toggleDropdown = () => {
+    setIsDropdownOpen(!isDropdownOpen);
+  };
+
+  // Render the Logout component
+  return (
+    <div style={{ position: 'relative' }}>
+      {redirectToLogin ? (
+        // Redirect to the login page if not authenticated
+        <LoginPage />
+      ) : (
+        <>
+          <div
+            style={{
+              position: 'absolute',
+              top: '10px',
+              right: '10px',
+              zIndex: 1,
+            }}
+          >
+            {/* Hamburger or Settings Button */}
+            <button
+              onClick={toggleDropdown}
               style={{
-                position: 'absolute',
-                top: '10px',
-                right: '10px',
-                zIndex: 1,
+                background: 'transparent',
+                color: '#333',
+                border: 'none',
+                borderRadius: '50%',
+                cursor: 'pointer',
+                height: '50px',
+                width: '50px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                fontSize: '24px',
               }}
             >
-              {/* Profile Toggle Button */}
-              <button
-                onClick={toggleDropdown}
+              ☰ {/* Hamburger icon or any other minimal icon */}
+            </button>
+            {/* Profile Dropdown */}
+            {isDropdownOpen && (
+              <div
                 style={{
-                  background: '#4caf50',
-                  color: 'white',
-                  border: 'none',
-                  borderRadius: '5px',
-                  cursor: 'pointer',
-                  height: '40px', 
-                  width: '120px',
+                  position: 'absolute',
+                  top: '70px',
+                  right: '10px',
+                  background: 'white',
+                  boxShadow: '0px 8px 16px 0px rgba(0,0,0,0.2)',
+                  borderRadius: '8px',
+                  padding: '10px',
+                  zIndex: 2,
                 }}
               >
-                {'Profile'}
-              </button>
-              {/* Profile Dropdown */}
-              {isDropdownOpen && (
-                <div
+                {/* Logout Button */}
+                <button
+                  onClick={handleLogout}
                   style={{
-                    position: 'absolute',
-                    top: '50px', 
-                    right: '0',
-                    background: 'white',
-                    boxShadow: '0px 8px 16px 0px rgba(0,0,0,0.2)',
+                    background: '#4CAF50',
+                    color: 'white',
+                    border: 'none',
                     borderRadius: '5px',
-                    padding: '10px',
-                    zIndex: 2,
+                    cursor: 'pointer',
+                    marginTop: '10px',
+                    padding: '8px 16px',
+                    fontSize: '16px',
                   }}
                 >
-                  {/* Logout Button */}
-                  <button
-                    onClick={handleLogout}
-                    style={{
-                      background: '#f44336',
-                      color: 'white',
-                      border: 'none',
-                      borderRadius: '5px',
-                      cursor: 'pointer',
-                      marginTop: '10px',
-                    }}
-                  >
-                    Logout
-                  </button>
-                </div>
-              )}
-            </div>
-            <DogSearchComponent />
-          </>
-        )}
-      </div>
-    );
-  };
-  
-  export default Logout;
+                  Logout
+                </button>
+              </div>
+            )}
+          </div>
+          {/* Render the DogSearchComponent when authenticated */}
+          <DogSearchComponent />
+        </>
+      )}
+    </div>
+  );
+};
+
+export default Logout;

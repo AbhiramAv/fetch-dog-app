@@ -1,9 +1,8 @@
-// Login.tsx
-
 import React, { useState } from 'react';
 import { useAuth } from './AuthContext';
 import styled from 'styled-components';
 
+// Styled components for styling the Login component
 const LoginContainer = styled.div`
   max-width: 400px;
   margin: 0 auto;
@@ -19,7 +18,7 @@ const Title = styled.h2`
 `;
 
 const Input = styled.input`
-  box-sizing: border-box; 
+  box-sizing: border-box;
   width: 100%;
   padding: 10px;
   margin-bottom: 10px;
@@ -46,12 +45,17 @@ const ErrorMessage = styled.p`
   text-align: center;
 `;
 
+// Login component definition
 const Login: React.FC = () => {
+  // Use the login function from the AuthContext
   const { login } = useAuth();
+  
+  // State for name, email, and error messages
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [error, setError] = useState('');
 
+  // Handle the login button click
   const handleLogin = () => {
     // Basic form validation
     if (name.trim() === '' || email.trim() === '') {
@@ -59,13 +63,14 @@ const Login: React.FC = () => {
       return;
     }
 
+    // Validate name using regular expression
     const nameRegex = /^[A-Za-z]+$/;
     if (!nameRegex.test(name)) {
       setError('Name should contain only alphabets.');
       return;
     }
 
-    // Email format validation
+    // Validate email format using regular expression
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
       setError('Invalid email format.');
@@ -75,13 +80,15 @@ const Login: React.FC = () => {
     // Clear previous errors
     setError('');
 
-    // Pass individual properties
+    // Call the login function with name and email
     login(name, email);
   };
 
+  // Render the Login component
   return (
     <LoginContainer>
       <Title>Login</Title>
+      {/* Input fields for name and email */}
       <Input
         type="text"
         placeholder="Name"
@@ -94,7 +101,9 @@ const Login: React.FC = () => {
         value={email}
         onChange={(e) => setEmail(e.target.value)}
       />
+      {/* Button to trigger the login process */}
       <Button onClick={handleLogin}>Login</Button>
+      {/* Display error message if any */}
       {error && <ErrorMessage>{error}</ErrorMessage>}
     </LoginContainer>
   );
